@@ -2,23 +2,34 @@ package cli
 
 import (
 	"fmt"
+	"github.com/eikc/gapp/internal/cli/actions"
 	"github.com/spf13/cobra"
 	"io"
 	"os/exec"
 )
 
-func Do(args []string, stdin io.Reader, stdout io.Writer, stderr io.Writer) int {
-	rootCmd := &cobra.Command{Use: "gapp", SilenceUsage: true}
-	rootCmd.AddCommand(versionCmd)
-	rootCmd.AddCommand(actionsCmd())
-	rootCmd.AddCommand(loginCmd())
-	rootCmd.AddCommand(repoCmd())
+type CLI struct {
+	rootCmd *cobra.Command
+}
 
-	// secrets should probably be a sub command under actions
-	rootCmd.AddCommand(secretCmd())
+func NewCLI() *CLI {
+	c := &CLI{
+		rootCmd: &cobra.Command{
+			Use:          "gapp",
+			SilenceUsage: true,
+		},
+	}
 
+	return c
+}
 
-	err := rootCmd.Execute()
+func (c *CLI) Do(args []string, stdin io.Reader, stdout io.Writer, stderr io.Writer) int {
+	c.rootCmd.SetArgs(args)
+	c.rootCmd.SetIn(stdin)
+	c.rootCmd.SetOut(stdout)
+	c.rootCmd.SetErr(stderr)
+
+	err := c.rootCmd.Execute()
 	if err != nil {
 		return 0
 	}
@@ -28,6 +39,14 @@ func Do(args []string, stdin io.Reader, stdout io.Writer, stderr io.Writer) int 
 	}
 
 	return 1
+}
+
+func (c *CLI) addCommands() {
+	c.rootCmd.AddCommand(c.completion())
+	c.rootCmd.AddCommand(versionCmd)
+	c.rootCmd.AddCommand(actions.Cmd())
+	c.rootCmd.AddCommand(loginCmd())
+	c.rootCmd.AddCommand(repoCmd())
 }
 
 var versionCmd = &cobra.Command{

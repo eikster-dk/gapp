@@ -3,6 +3,7 @@ module github.com/eikc/gapp
 go 1.14
 
 require (
+	github.com/bradleyjkemp/cupaloy v2.3.0+incompatible
 	github.com/google/go-github/v30 v30.1.0
 	github.com/kr/pretty v0.2.0 // indirect
 	github.com/kr/text v0.2.0 // indirect

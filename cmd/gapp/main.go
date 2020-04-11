@@ -6,5 +6,7 @@ import (
 )
 
 func main() {
-	os.Exit(cli.Do(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
+	c := cli.NewCLI()
+
+	os.Exit(c.Do(os.Args[1:], os.Stdin, os.Stdout, os.Stderr))
 }

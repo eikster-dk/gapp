@@ -1,4 +1,4 @@
-package cli
+package actions
 
 import (
 	"encoding/json"
@@ -10,12 +10,14 @@ import (
 	"strings"
 )
 
-func actionsCmd() *cobra.Command {
+func Cmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "actions",
 		Short: "Actions commands will... ",
 	}
+
 	cmd.AddCommand(dispatchCmd())
+	cmd.AddCommand(secretCmd())
 
 	return cmd
 }
@@ -70,7 +72,7 @@ func dispatchCmd() *cobra.Command {
 			}
 
 			fmt.Println("command dispatch initiated")
-			
+
 			return nil
 		},
 	}

@@ -11,7 +11,7 @@ type Encrypt struct {
 }
 
 func NewEncrypt() Encrypt {
-	return NewEncrypt()
+	return Encrypt{}
 }
 
 func (e Encrypt) Encrypt(value string, pkey []byte) (string, error) {

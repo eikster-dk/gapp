@@ -38,7 +38,7 @@ func manageSecrets() *cobra.Command {
 			encryptionWriter := secrets.NewEncrypt()
 			filesReader := files.Reader{}
 
-			cli := secrets.NewSecretsCLI(client, filesReader, encryptionWriter )
+			cli := secrets.NewSecretsCLI(client, filesReader, encryptionWriter)
 
 			return cli.RunManagement(ctx, secrets.ManagementParams{
 				File: loc,

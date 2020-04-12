@@ -20,6 +20,8 @@ func NewCLI() *CLI {
 		},
 	}
 
+	c.addCommands()
+
 	return c
 }
 

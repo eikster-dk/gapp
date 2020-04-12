@@ -34,5 +34,7 @@ func (c *CLI) completion() *cobra.Command {
 		},
 	}
 
+	cmd.Flags().StringP("shell", "s", "bash", "Shell type for auto completion")
+
 	return cmd
 }

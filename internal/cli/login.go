@@ -8,7 +8,7 @@ import (
 func loginCmd() *cobra.Command {
 	var initialization = &cobra.Command{
 		Use:   "login",
-		Short: "login provides the mechanisme to authenticate with github",
+		Short: "Login initiates gapp by allowing you to provide a personal access token",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return authentication.SaveUser()
 		},

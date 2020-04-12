@@ -3,6 +3,7 @@ package gh
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"github.com/eikc/gapp/internal/authentication"
 	"github.com/google/go-github/v30/github"
 	"golang.org/x/oauth2"
@@ -10,6 +11,18 @@ import (
 
 type ActionsClient struct {
 	client *github.Client
+}
+
+func (c *ActionsClient) Dispatch(ctx context.Context, owner, repo, event string, payload []byte) error {
+	raw := json.RawMessage(payload)
+	req := github.DispatchRequestOptions{
+		EventType:     event,
+		ClientPayload: &raw,
+	}
+
+	_, _, err := c.client.Repositories.Dispatch(ctx, owner, repo, req)
+
+	return err
 }
 
 type SecretParams struct {

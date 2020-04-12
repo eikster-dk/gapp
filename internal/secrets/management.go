@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/eikc/gapp/internal/gh"
+	"github.com/eikc/gapp/internal/ux"
 	"gopkg.in/yaml.v2"
 	"strings"
 )
@@ -23,14 +24,25 @@ type ManagementParams struct {
 }
 
 func (cli *CLI) RunManagement(ctx context.Context, params ManagementParams) error {
+	spinner, err := ux.NewSpinner("Creating or Updating secrets", "Reading file")
+	if err != nil {
+		return err
+	}
+
+	spinner.Start()
+
 	content, err := cli.reader.ReadFile(params.File)
 	if err != nil {
+		spinner.Fail()
+
 		return err
 	}
 
 	var secrets Secrets
 	err = yaml.Unmarshal(content, &secrets)
 	if err != nil {
+		spinner.Fail()
+
 		return err
 	}
 
@@ -45,15 +57,20 @@ func (cli *CLI) RunManagement(ctx context.Context, params ManagementParams) erro
 
 		owner := splitted[0]
 		repo := splitted[1]
-
 		pkey, pkeyId, err := cli.githubClient.GetPublicKey(ctx, owner, repo)
 		if err != nil {
+			spinner.Fail()
+
 			return err
 		}
 
 		for _, secret := range secrets {
+			spinner.Message(fmt.Sprintf("%s for repo %s", secret.Name, repo))
+
 			encoded, err := cli.encryptionWriter.Encrypt(secret.Value, pkey)
 			if err != nil {
+				spinner.Fail()
+
 				return err
 			}
 
@@ -64,12 +81,14 @@ func (cli *CLI) RunManagement(ctx context.Context, params ManagementParams) erro
 			})
 
 			if err != nil {
+				spinner.Fail()
+
 				return err
 			}
 		}
 	}
 
-	return nil
+	return spinner.Stop()
 }
 
 func sortSecrets(secrets Secrets) map[string][]Secret {

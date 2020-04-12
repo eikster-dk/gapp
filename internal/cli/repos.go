@@ -12,7 +12,7 @@ import (
 
 func repoCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Short: "repo ",
+		Short: "Work in progress",
 		Use: "repo",
 	}
 

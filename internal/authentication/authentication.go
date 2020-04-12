@@ -18,7 +18,7 @@ func GetUser() (User, error) {
 	home, _ := os.UserHomeDir()
 	dir := fmt.Sprintf("%s/.gapp", home)
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		return User{}, err
+		return User{}, fmt.Errorf("gapp has not been initialized, please use gapp login")
 	}
 
 	filename := fmt.Sprintf("%s/authentication.json", dir)

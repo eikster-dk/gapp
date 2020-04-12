@@ -29,7 +29,7 @@ func (c *CLI) Do(args []string, stdin io.Reader, stdout io.Writer, stderr io.Wri
 	c.rootCmd.SetOut(stdout)
 	c.rootCmd.SetErr(stderr)
 
-	err := c.rootCmd.Execute()
+	_, err := c.rootCmd.ExecuteC()
 	if err != nil {
 		return 0
 	}

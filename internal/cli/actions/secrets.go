@@ -2,6 +2,7 @@ package actions
 
 import (
 	"github.com/eikc/gapp/internal/authentication"
+	"github.com/eikc/gapp/internal/files"
 	"github.com/eikc/gapp/internal/gh"
 	"github.com/eikc/gapp/internal/secrets"
 	"github.com/spf13/cobra"
@@ -35,8 +36,9 @@ func manageSecrets() *cobra.Command {
 
 			client := gh.NewActionsClient(ctx, user)
 			encryptionWriter := secrets.NewEncrypt()
+			filesReader := files.Reader{}
 
-			cli := secrets.NewSecretsCLI(client, nil, encryptionWriter )
+			cli := secrets.NewSecretsCLI(client, filesReader, encryptionWriter )
 
 			return cli.RunManagement(ctx, secrets.ManagementParams{
 				File: loc,

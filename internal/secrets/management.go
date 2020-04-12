@@ -39,7 +39,8 @@ func (cli *CLI) RunManagement(ctx context.Context, params ManagementParams) erro
 	for repo, secrets := range sortedSecrets {
 		splitted := strings.Split(repo, "/")
 		if len(splitted) < 2 {
-			return fmt.Errorf("repository is not correctly formattted, use [owner]/[repository] pattern")
+			return fmt.Errorf("repository is not correctly formattted, use [owner]/[repository] pattern, got: %s",
+				splitted[0])
 		}
 
 		owner := splitted[0]

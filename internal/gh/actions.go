@@ -34,11 +34,11 @@ func NewActionsClient(ctx context.Context, user authentication.User) *ActionsCli
 func (c *ActionsClient) GetPublicKey(ctx context.Context, owner, repo string) ([]byte, string, error) {
 	pkey, _, err := c.client.Actions.GetPublicKey(ctx, owner, repo)
 	if err != nil {
-		return nil, nil, err
+		return nil, "", err
 	}
 	decoded, err := base64.StdEncoding.DecodeString(*pkey.Key)
 	if err != nil {
-		return nil, nil, err
+		return nil, "", err
 	}
 
 	return decoded, *pkey.KeyID, nil

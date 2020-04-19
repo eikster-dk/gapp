@@ -6,7 +6,6 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 	"io/ioutil"
 	"os"
-	"syscall"
 )
 
 type User struct {
@@ -43,7 +42,7 @@ func SaveUser() error {
 	fmt.Scanln(&username)
 
 	fmt.Println("Provide your personal github token: ")
-	b, _ := terminal.ReadPassword(syscall.Stdin)
+	b, _ := terminal.ReadPassword(int(os.Stdin.Fd()))
 
 	home, _ := os.UserHomeDir()
 

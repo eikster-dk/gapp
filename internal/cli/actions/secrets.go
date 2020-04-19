@@ -38,8 +38,8 @@ func manageSecrets() *cobra.Command {
 			client := gh.NewActionsClient(ctx, user)
 			encryptionWriter := secrets.NewEncrypt()
 			filesReader := files.Reader{}
-			
-			spinner, err := ux.NewSpinner("", "")
+
+			spinner, err := ux.NewSpinner("Creating or Updating secrets", "Starting...")
 			if err != nil {
 				return err
 			}

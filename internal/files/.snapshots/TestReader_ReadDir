@@ -1,0 +1,4 @@
+([]string) (len=2) {
+  (string) (len=20) "testData/fileOne.txt",
+  (string) (len=20) "testData/fileTwo.txt"
+}

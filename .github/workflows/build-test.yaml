@@ -33,7 +33,7 @@ jobs:
         run: go mod download
 
       - name: go build
-        run: go build -v .
+        run: go build -v ./cmd/gapp
 
       - name: go test
         run: go test ./...

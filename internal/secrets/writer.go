@@ -16,21 +16,21 @@ type EncryptionWriter interface {
 	Encrypt(value string, pkey []byte) (string, error)
 }
 
-type Client struct {
+type writer struct {
 	client  ActionsClient
-	spinner Spinner
 	writer  EncryptionWriter
+	spinner Spinner
 }
 
-func NewClient(client ActionsClient, spinner Spinner, writer EncryptionWriter) *Client {
-	return &Client{
+func NewWriter(client ActionsClient, encryptor EncryptionWriter, spinner Spinner) *writer {
+	return &writer{
 		client:  client,
+		writer:  encryptor,
 		spinner: spinner,
-		writer:  writer,
 	}
 }
 
-func (g *Client) updateSecrets(ctx context.Context, sortedSecrets map[string][]Secret) error {
+func (g *writer) updateSecrets(ctx context.Context, sortedSecrets map[string][]Secret) error {
 	for repo, secrets := range sortedSecrets {
 		splitted := strings.Split(repo, "/")
 		if len(splitted) < 2 {

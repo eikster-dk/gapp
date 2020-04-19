@@ -10,17 +10,17 @@ type FileReader interface {
 	ReadDir(path string) ([]string, error)
 }
 
-type Parser struct {
+type parser struct {
 	reader FileReader
 }
 
-func NewParser(r FileReader) *Parser {
-	return &Parser{
+func NewParser(r FileReader) *parser {
+	return &parser{
 		reader: r,
 	}
 }
 
-func (p *Parser) Parse(path string) (map[string][]Secret, error) {
+func (p *parser) Parse(path string) (map[string][]Secret, error) {
 	isFile, err := p.reader.IsFile(path)
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func (p *Parser) Parse(path string) (map[string][]Secret, error) {
 
 }
 
-func (p *Parser) parseSecret(path string) (YamlDefinition, error) {
+func (p *parser) parseSecret(path string) (YamlDefinition, error) {
 	content, err := p.reader.ReadFile(path)
 	if err != nil {
 		return YamlDefinition{}, err
@@ -72,7 +72,7 @@ func (p *Parser) parseSecret(path string) (YamlDefinition, error) {
 	return definition, nil
 }
 
-func (p *Parser) sortSecrets(definition YamlDefinition) map[string][]Secret {
+func (p *parser) sortSecrets(definition YamlDefinition) map[string][]Secret {
 	mapped := make(map[string][]Secret)
 	for _, secret := range definition.Secrets {
 		for _, r := range secret.Repos {

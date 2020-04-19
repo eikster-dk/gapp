@@ -88,7 +88,7 @@ func Test_github_updateSecrets(t *testing.T) {
 			tt.configureClient(mockClient)
 			tt.configureEncryptionWriter(mockEncryption)
 
-			cli := &Client{
+			cli := &writer{
 				client:  mockClient,
 				writer:  mockEncryption,
 				spinner: mocks.NoopSpinner{},

@@ -44,11 +44,10 @@ func manageSecrets() *cobra.Command {
 				return err
 			}
 
-			secretClient := secrets.NewClient(client, spinner, encryptionWriter)
+			writer := secrets.NewWriter(client, encryptionWriter, spinner)
+			service := secrets.NewService(writer, parser, spinner)
 
-			cli := secrets.NewSecretsCLI(parser, secretClient, spinner)
-
-			return cli.RunManagement(ctx, secrets.ManagementParams{
+			return service.RunManagement(ctx, secrets.ManagementParams{
 				Path: loc,
 			})
 		},

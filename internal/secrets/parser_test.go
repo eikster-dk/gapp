@@ -82,7 +82,7 @@ func Test_parser_Parse(t *testing.T) {
 
 			tt.configure(mockFileReader)
 
-			p := Parser{
+			p := parser{
 				reader: mockFileReader,
 			}
 
@@ -135,7 +135,7 @@ func Test_parser_parseSecret(t *testing.T) {
 			mockReader := mocks.NewMockFileReader(ctrl)
 			tt.configure(mockReader)
 
-			p := Parser{
+			p := parser{
 				reader: mockReader,
 			}
 
@@ -167,7 +167,7 @@ func Test_parser_sortSecrets(t *testing.T) {
 		},
 	}
 
-	p := Parser{}
+	p := parser{}
 
 	sorted := p.sortSecrets(secrets)
 

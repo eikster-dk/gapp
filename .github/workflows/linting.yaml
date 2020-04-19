@@ -7,7 +7,7 @@ on:
       - synchronize
 
 jobs:
-  main:
+  linting-pr:
     runs-on: ubuntu-latest
     steps:
       - uses: amannn/action-semantic-pull-request@v1.1.1

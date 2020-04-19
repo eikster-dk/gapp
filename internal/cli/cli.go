@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"fmt"
 	"github.com/eikc/gapp/internal/cli/actions"
 	"github.com/spf13/cobra"
 	"io"
@@ -49,12 +48,4 @@ func (c *CLI) addCommands() {
 	c.rootCmd.AddCommand(actions.Cmd())
 	c.rootCmd.AddCommand(loginCmd())
 	c.rootCmd.AddCommand(repoCmd())
-}
-
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Print the gapp version number",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Coming soon :-)")
-	},
 }

@@ -7,11 +7,11 @@ builds:
       - darwin
       - linux
     ldflags:
-      - -X github.com/eikc/gapp/internal/cli.Build={{ .ShortCommit }}
-      - -X github.com/eikc/gapp/internal/cli.Major={{ .Major }}
-      - -X github.com/eikc/gapp/internal/cli.Minor={{ .Minor }}
-      - -X github.com/eikc/gapp/internal/cli.Patch={{ .Patch }}
-      - -X github.com/eikc/gapp/internal/cli.Label=release
+      - -X github.com/eikc/gapp/parser/cli.Build={{ .ShortCommit }}
+      - -X github.com/eikc/gapp/parser/cli.Major={{ .Major }}
+      - -X github.com/eikc/gapp/parser/cli.Minor={{ .Minor }}
+      - -X github.com/eikc/gapp/parser/cli.Patch={{ .Patch }}
+      - -X github.com/eikc/gapp/parser/cli.Label=release
 archives:
   - replacements:
       darwin: Darwin

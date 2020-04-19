@@ -8,10 +8,6 @@ import (
 
 type Reader struct{}
 
-type ReadFile interface {
-	ReadFile(path string) ([]byte, error)
-}
-
 func (f Reader) IsFile(path string) (bool, error) {
 	fi, err := os.Stat(path)
 	if err != nil {

@@ -37,14 +37,16 @@ func manageSecrets() *cobra.Command {
 
 			client := gh.NewActionsClient(ctx, user)
 			encryptionWriter := secrets.NewEncrypt()
-			filesReader := files.Reader{}
+			parser := secrets.NewParser(files.Reader{})
 
 			spinner, err := ux.NewSpinner("Creating or Updating secrets", "Starting...")
 			if err != nil {
 				return err
 			}
 
-			cli := secrets.NewSecretsCLI(client, filesReader, encryptionWriter, spinner)
+			secretClient := secrets.NewClient(client, spinner, encryptionWriter)
+
+			cli := secrets.NewSecretsCLI(parser, secretClient, spinner)
 
 			return cli.RunManagement(ctx, secrets.ManagementParams{
 				Path: loc,

@@ -32,3 +32,13 @@ release:
   github:
     owner: eikc
     name: gapp
+
+brews:
+  - name: gapp
+    github:
+      owner: eikc
+      name: gapp-homebrew-tap
+    folder: Formula
+    description: Small utility cli to ease the use of github
+    test: |
+      system "gapp version"

@@ -9,9 +9,9 @@ jobs:
   build:
     strategy:
       matrix:
-        environment: ['test', 'production']
+        os: [ubuntu-latest]
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
 
       - name: Set up Go

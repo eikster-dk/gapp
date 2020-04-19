@@ -7,6 +7,9 @@ on:
 jobs:
 
   build:
+    strategy:
+      matrix:
+        environment: ['test', 'production']
     name: Build
     runs-on: ubuntu-latest
     steps:
@@ -24,14 +27,14 @@ jobs:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
-              ${{ runner.os }}-go-
+            ${{ runner.os }}-go-
 
       - name: Get dependencies
-          run: go mod download
+        run: go mod download
 
       - name: go build
-          run: go build -v .
+        run: go build -v .
 
       - name: go test
-          run: go test ./...
+        run: go test ./...
 

@@ -154,7 +154,9 @@ func TestRunManagement(t *testing.T) {
 			test.ghMockConfig(ghMock, test.Secrets)
 			test.encryptionConfig(encryptionMock, test.Secrets)
 
-			cli := NewSecretsCLI(ghMock, fileReader, encryptionMock)
+			mockSpinner := &mocks.MockSpinner{}
+
+			cli := NewSecretsCLI(ghMock, fileReader, encryptionMock, mockSpinner)
 
 			ctx := context.Background()
 

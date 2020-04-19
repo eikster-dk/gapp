@@ -5,6 +5,7 @@ import (
 	"github.com/eikc/gapp/internal/files"
 	"github.com/eikc/gapp/internal/gh"
 	"github.com/eikc/gapp/internal/secrets"
+	"github.com/eikc/gapp/internal/ux"
 	"github.com/spf13/cobra"
 )
 
@@ -37,8 +38,13 @@ func manageSecrets() *cobra.Command {
 			client := gh.NewActionsClient(ctx, user)
 			encryptionWriter := secrets.NewEncrypt()
 			filesReader := files.Reader{}
+			
+			spinner, err := ux.NewSpinner("", "")
+			if err != nil {
+				return err
+			}
 
-			cli := secrets.NewSecretsCLI(client, filesReader, encryptionWriter)
+			cli := secrets.NewSecretsCLI(client, filesReader, encryptionWriter, spinner)
 
 			return cli.RunManagement(ctx, secrets.ManagementParams{
 				File: loc,

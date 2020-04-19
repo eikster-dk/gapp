@@ -10,6 +10,7 @@ type CLI struct {
 	reader           FileReader
 	githubClient     ActionsClient
 	encryptionWriter EncryptionWriter
+	spinner          Spinner
 }
 
 type FileReader interface {
@@ -27,10 +28,18 @@ type EncryptionWriter interface {
 	Encrypt(value string, pkey []byte) (string, error)
 }
 
-func NewSecretsCLI(ghActions ActionsClient, reader FileReader, writer EncryptionWriter) *CLI {
+type Spinner interface {
+	Start() error
+	Message(msg string)
+	Stop() error
+	Fail() error
+}
+
+func NewSecretsCLI(ghActions ActionsClient, reader FileReader, writer EncryptionWriter, spinner Spinner) *CLI {
 	return &CLI{
 		reader:           reader,
 		githubClient:     ghActions,
 		encryptionWriter: writer,
+		spinner:          spinner,
 	}
 }

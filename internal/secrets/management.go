@@ -23,13 +23,17 @@ type ManagementParams struct {
 }
 
 func (cli *CLI) RunManagement(ctx context.Context, params ManagementParams) error {
+	cli.spinner.Start()
+
 	sortedSecrets, err := cli.parseAndSort(params)
 	if err != nil {
+		cli.spinner.Fail()
 		return err
 	}
 
 	err = cli.updateSecrets(ctx, sortedSecrets)
 	if err != nil {
+		cli.spinner.Fail()
 		return err
 	}
 
@@ -52,6 +56,7 @@ func (cli *CLI) updateSecrets(ctx context.Context, sortedSecrets map[string][]Se
 		}
 
 		for _, secret := range secrets {
+			cli.spinner.Message(fmt.Sprintf("repo: %s secret: %s", repo, secret.Name))
 			encoded, err := cli.encryptionWriter.Encrypt(secret.Value, pkey)
 			if err != nil {
 				return err

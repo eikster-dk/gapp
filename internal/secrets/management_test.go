@@ -225,3 +225,91 @@ func Test_parseSecrets(t *testing.T) {
 		})
 	}
 }
+
+func TestCLI_readAndParse(t *testing.T) {
+	tests := []struct {
+		name      string
+		params    ManagementParams
+		configure func(reader *mocks.MockFileReader)
+	}{
+		{
+			name: "path from params is a file",
+			params: ManagementParams{
+				Path: "testFile",
+			},
+			configure: func(reader *mocks.MockFileReader) {
+				testData := Secrets{
+					Secrets: []Secret{
+						{
+							Name:  "name",
+							Value: "value",
+							Repos: []string{"eikc/repo-one"},
+						},
+					},
+				}
+				bytes, _ := yaml.Marshal(&testData)
+
+				reader.EXPECT().IsFile("testFile").Times(1).Return(true, nil)
+				reader.EXPECT().ReadFile("testFile").Times(1).Return(bytes, nil)
+			},
+		},
+		{
+			name: "provided path is a directory",
+			params: ManagementParams{
+				Path: "testFolder",
+			},
+			configure: func(reader *mocks.MockFileReader) {
+				testPaths := []string{
+					"testFile.yaml",
+					"testTwo.yaml",
+				}
+
+				fileOneContent := Secrets{
+					Secrets: []Secret{
+						{
+							Name:  "secret 1",
+							Value: "123321",
+							Repos: []string{"eikc/gapp"},
+						},
+					},
+				}
+
+				fileTwoContent := Secrets{
+					Secrets: []Secret{
+						{
+							Name:  "secret 2",
+							Value: "secret 2",
+							Repos: []string{"eikc/gapp"},
+						},
+					},
+				}
+
+				bytesOne, _ := yaml.Marshal(&fileOneContent)
+				bytesTwo, _ := yaml.Marshal(&fileTwoContent)
+
+				reader.EXPECT().IsFile("testFolder").Times(1).Return(false, nil)
+				reader.EXPECT().ReadDir("testFolder").Times(1).Return(testPaths, nil)
+
+				reader.EXPECT().ReadFile("testFile.yaml").Times(1).Return(bytesOne, nil)
+				reader.EXPECT().ReadFile("testTwo.yaml").Times(1).Return(bytesTwo, nil)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			mockFileReader := mocks.NewMockFileReader(ctrl)
+
+			tt.configure(mockFileReader)
+
+			cli := CLI{
+				reader: mockFileReader,
+			}
+
+			got, err := cli.readAndParse(tt.params)
+
+			cupaloy.SnapshotT(t, got, err)
+		})
+	}
+}

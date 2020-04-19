@@ -6,7 +6,12 @@ builds:
       - windows
       - darwin
       - linux
-
+    ldflags:
+      - -X github.com/eikc/gapp/internal/cli.Build={{ .ShortCommit }}
+      - -X github.com/eikc/gapp/internal/cli.Major={{ .Major }}
+      - -X github.com/eikc/gapp/internal/cli.Minor={{ .Minor }}
+      - -X github.com/eikc/gapp/internal/cli.Patch={{ .Patch }}
+      - -X github.com/eikc/gapp/internal/cli.Label=release
 archives:
   - replacements:
       darwin: Darwin
@@ -32,3 +37,13 @@ release:
   github:
     owner: eikc
     name: gapp
+
+brews:
+  - name: gapp
+    github:
+      owner: eikc
+      name: gapp-homebrew-tap
+    folder: Formula
+    description: Small utility cli to ease the use of github
+    test: |
+      system "gapp version"

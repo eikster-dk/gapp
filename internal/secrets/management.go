@@ -3,6 +3,7 @@ package secrets
 import (
 	"context"
 	"fmt"
+	"github.com/eikc/gapp/internal/files"
 	"github.com/eikc/gapp/internal/gh"
 	"gopkg.in/yaml.v2"
 	"strings"
@@ -19,13 +20,13 @@ type Secret struct {
 }
 
 type ManagementParams struct {
-	File string
+	Path string
 }
 
 func (cli *CLI) RunManagement(ctx context.Context, params ManagementParams) error {
 	cli.spinner.Start()
 
-	sortedSecrets, err := cli.parseAndSort(params)
+	sortedSecrets, err := cli.readAndParse(params)
 	if err != nil {
 		cli.spinner.Fail()
 		return err
@@ -77,20 +78,55 @@ func (cli *CLI) updateSecrets(ctx context.Context, sortedSecrets map[string][]Se
 	return nil
 }
 
-func (cli *CLI) parseAndSort(params ManagementParams) (map[string][]Secret, error) {
-	content, err := cli.reader.ReadFile(params.File)
+func (cli *CLI) readAndParse(params ManagementParams) (map[string][]Secret, error) {
+	isFile, err := cli.reader.IsFile(params.Path)
 	if err != nil {
 		return nil, err
+	}
+
+	if isFile {
+		secrets, err := parseSecrets(params.Path, cli.reader)
+		if err != nil {
+			return nil, err
+		}
+
+		sortedSecrets := sortSecrets(secrets)
+		return sortedSecrets, nil
+	} else {
+		paths, err := cli.reader.ReadDir(params.Path)
+		if err != nil {
+			return nil, err
+		}
+
+		var secrets []Secret
+		for _, p := range paths {
+			ss, err := parseSecrets(p, cli.reader)
+			if err != nil {
+				return nil, err
+			}
+
+			secrets = append(secrets, ss.Secrets...)
+		}
+
+		sortedSecrets := sortSecrets(Secrets{secrets})
+
+		return sortedSecrets, nil
+	}
+}
+
+func parseSecrets(path string, reader files.ReadFile) (Secrets, error) {
+	content, err := reader.ReadFile(path)
+	if err != nil {
+		return Secrets{}, err
 	}
 
 	var secrets Secrets
 	err = yaml.Unmarshal(content, &secrets)
 	if err != nil {
-		return nil, err
+		return Secrets{}, err
 	}
 
-	sortedSecrets := sortSecrets(secrets)
-	return sortedSecrets, nil
+	return secrets, nil
 }
 
 func sortSecrets(secrets Secrets) map[string][]Secret {

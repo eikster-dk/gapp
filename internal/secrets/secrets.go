@@ -3,7 +3,6 @@ package secrets
 import (
 	"context"
 	"github.com/eikc/gapp/internal/gh"
-	"os"
 )
 
 type CLI struct {
@@ -16,7 +15,7 @@ type CLI struct {
 type FileReader interface {
 	IsFile(path string) (bool, error)
 	ReadFile(path string) ([]byte, error)
-	ReadDir(path string) ([]os.FileInfo, error)
+	ReadDir(path string) ([]string, error)
 }
 
 type ActionsClient interface {
@@ -43,3 +42,4 @@ func NewSecretsCLI(ghActions ActionsClient, reader FileReader, writer Encryption
 		spinner:          spinner,
 	}
 }
+

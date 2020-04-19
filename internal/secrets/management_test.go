@@ -2,6 +2,7 @@ package secrets
 
 import (
 	"context"
+	"fmt"
 	"github.com/bradleyjkemp/cupaloy"
 	"github.com/eikc/gapp/internal/secrets/mocks"
 	"github.com/golang/mock/gomock"
@@ -161,7 +162,7 @@ func TestRunManagement(t *testing.T) {
 			ctx := context.Background()
 
 			err := cli.RunManagement(ctx, ManagementParams{
-				File: "./test.yaml",
+				Path: "./test.yaml",
 			})
 
 			if err != nil {
@@ -172,6 +173,55 @@ func TestRunManagement(t *testing.T) {
 				cupaloy.SnapshotT(t, err)
 			}
 
+		})
+	}
+}
+
+func Test_parseSecrets(t *testing.T) {
+	tests := []struct {
+		name      string
+		path      string
+		configure func(reader *mocks.MockFileReader)
+	}{
+		{
+			name: "Parse secrets will parse the readers content correctly",
+			path: "./secrets.yaml",
+			configure: func(reader *mocks.MockFileReader) {
+				returned := Secrets{
+					Secrets: []Secret{
+						{
+							Name:  "github token",
+							Value: "123332121312312312312",
+							Repos: []string{"eikc/gapp"},
+						},
+					},
+				}
+
+				bytes, err := yaml.Marshal(&returned)
+				if err != nil {
+					t.Errorf("Configuring test failed: %s", err)
+				}
+
+				reader.EXPECT().ReadFile("./secrets.yaml").Times(1).Return(bytes, nil)
+			},
+		},
+		{
+			name: "Reader returns an error",
+			path: "./secrets.yaml",
+			configure: func(reader *mocks.MockFileReader) {
+				reader.EXPECT().ReadFile("./secrets.yaml").Return(nil, fmt.Errorf("a fake error from io.ReadFile"))
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			mockReader := mocks.NewMockFileReader(ctrl)
+			tt.configure(mockReader)
+
+			got, err := parseSecrets(tt.path, mockReader)
+
+			cupaloy.SnapshotT(t, got, err)
 		})
 	}
 }

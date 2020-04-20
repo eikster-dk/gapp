@@ -20,7 +20,7 @@ type writer struct {
 	writer EncryptionWriter
 }
 
-func (w *writer) updateSecret(ctx context.Context, owner, repo string, secret internal.Secret) error {
+func (w *writer) UpdateSecret(ctx context.Context, owner, repo string, secret internal.Secret) error {
 	pkey, pkeyId, err := w.client.GetPublicKey(ctx, owner, repo)
 	if err != nil {
 		return err

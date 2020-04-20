@@ -68,7 +68,7 @@ func Test_github_updateSecrets(t *testing.T) {
 				writer: mockEncryption,
 			}
 
-			err := cli.updateSecret(ctx, tt.params.owner, tt.params.repo, tt.params.secret)
+			err := cli.UpdateSecret(ctx, tt.params.owner, tt.params.repo, tt.params.secret)
 
 			cupaloy.SnapshotT(t, err)
 		})

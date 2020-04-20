@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"github.com/eikc/gapp/internal/authentication"
 	"github.com/google/go-github/v30/github"
 	"golang.org/x/oauth2"
@@ -11,6 +12,7 @@ import (
 
 type ActionsClient struct {
 	client *github.Client
+	pkeys  map[string]*github.PublicKey
 }
 
 func (c *ActionsClient) Dispatch(ctx context.Context, owner, repo, event string, payload []byte) error {
@@ -41,20 +43,30 @@ func NewActionsClient(ctx context.Context, user authentication.User) *ActionsCli
 
 	return &ActionsClient{
 		client: client,
+		pkeys:  map[string]*github.PublicKey{},
 	}
 }
 
 func (c *ActionsClient) GetPublicKey(ctx context.Context, owner, repo string) ([]byte, string, error) {
-	pkey, _, err := c.client.Actions.GetPublicKey(ctx, owner, repo)
-	if err != nil {
-		return nil, "", err
+	repoUrl := fmt.Sprintf("%s/%s", owner, repo)
+
+	val, ok := c.pkeys[repoUrl]
+	if !ok {
+		key, _, err := c.client.Actions.GetPublicKey(ctx, owner, repo)
+		if err != nil {
+			return nil, "", err
+		}
+
+		c.pkeys[repoUrl] = key
+		val = key
 	}
-	decoded, err := base64.StdEncoding.DecodeString(*pkey.Key)
+
+	decoded, err := base64.StdEncoding.DecodeString(*val.Key)
 	if err != nil {
 		return nil, "", err
 	}
 
-	return decoded, *pkey.KeyID, nil
+	return decoded, *val.KeyID, nil
 }
 
 func (c *ActionsClient) AddOrUpdateSecret(ctx context.Context, owner, repo string, secret SecretParams) error {

@@ -7,7 +7,6 @@ require (
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/golang/mock v1.4.3
 	github.com/google/go-github/v30 v30.1.0
-	github.com/kr/pretty v0.2.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect

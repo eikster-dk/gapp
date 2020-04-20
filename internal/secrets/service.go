@@ -2,10 +2,12 @@ package secrets
 
 import (
 	"context"
+	"fmt"
+	"strings"
 )
 
 type Writer interface {
-	updateSecrets(ctx context.Context, sortedSecrets map[string][]Secret) error
+	updateSecret(ctx context.Context, owner, repo string, secret Secret) error
 }
 
 type Parser interface {
@@ -39,10 +41,24 @@ func (s *Service) RunManagement(ctx context.Context, params ManagementParams) er
 		return err
 	}
 
-	err = s.writer.updateSecrets(ctx, secrets)
-	if err != nil {
-		s.spinner.Fail()
-		return err
+	for repoIdentifier, ss := range secrets {
+		splitted := strings.Split(repoIdentifier, "/")
+		if len(splitted) < 2 {
+			return fmt.Errorf("repository is not correctly formattted, use [owner]/[repository] pattern, got: %s",
+				splitted[0])
+		}
+
+		owner := splitted[0]
+		repo := splitted[1]
+
+		for _, secret := range ss {
+			s.spinner.Message(fmt.Sprintf("repo: %s secret: %s", repoIdentifier, secret.Name))
+			err = s.writer.updateSecret(ctx, owner, repo, secret)
+			if err != nil {
+				s.spinner.Fail()
+				return err
+			}
+		}
 	}
 
 	return s.spinner.Stop()

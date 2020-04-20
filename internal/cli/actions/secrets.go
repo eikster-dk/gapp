@@ -44,7 +44,7 @@ func manageSecrets() *cobra.Command {
 				return err
 			}
 
-			writer := secrets.NewWriter(client, encryptionWriter, spinner)
+			writer := secrets.NewWriter(client, encryptionWriter)
 			service := secrets.NewService(writer, parser, spinner)
 
 			return service.RunManagement(ctx, secrets.ManagementParams{

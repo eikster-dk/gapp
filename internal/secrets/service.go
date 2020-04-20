@@ -3,15 +3,23 @@ package secrets
 import (
 	"context"
 	"fmt"
+	"github.com/eikc/gapp/internal"
 	"strings"
 )
 
 type Writer interface {
-	updateSecret(ctx context.Context, owner, repo string, secret Secret) error
+	updateSecret(ctx context.Context, owner, repo string, secret internal.Secret) error
 }
 
 type Parser interface {
-	Parse(path string) (map[string][]Secret, error)
+	Parse(path string) (map[string][]internal.Secret, error)
+}
+
+type Spinner interface {
+	Start() error
+	Message(msg string)
+	Stop() error
+	Fail() error
 }
 
 type Service struct {

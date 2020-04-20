@@ -2,6 +2,7 @@ package secrets
 
 import (
 	"context"
+	"github.com/eikc/gapp/internal"
 	"github.com/eikc/gapp/internal/gh"
 )
 
@@ -19,7 +20,7 @@ type writer struct {
 	writer EncryptionWriter
 }
 
-func (w *writer) updateSecret(ctx context.Context, owner, repo string, secret Secret) error {
+func (w *writer) updateSecret(ctx context.Context, owner, repo string, secret internal.Secret) error {
 	pkey, pkeyId, err := w.client.GetPublicKey(ctx, owner, repo)
 	if err != nil {
 		return err

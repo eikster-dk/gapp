@@ -1,6 +1,7 @@
 package secrets
 
 import (
+	"github.com/eikc/gapp/internal"
 	"gopkg.in/yaml.v2"
 )
 
@@ -20,7 +21,7 @@ func NewParser(r FileReader) *parser {
 	}
 }
 
-func (p *parser) Parse(path string) (map[string][]Secret, error) {
+func (p *parser) Parse(path string) (map[string][]internal.Secret, error) {
 	isFile, err := p.reader.IsFile(path)
 	if err != nil {
 		return nil, err
@@ -72,12 +73,12 @@ func (p *parser) parseSecret(path string) (YamlDefinition, error) {
 	return definition, nil
 }
 
-func (p *parser) sortSecrets(definition YamlDefinition) map[string][]Secret {
-	mapped := make(map[string][]Secret)
+func (p *parser) sortSecrets(definition YamlDefinition) map[string][]internal.Secret {
+	mapped := make(map[string][]internal.Secret)
 	for _, secret := range definition.Secrets {
 		for _, r := range secret.Repos {
 			rr := mapped[r]
-			rr = append(rr, Secret{
+			rr = append(rr, internal.Secret{
 				Name:  secret.Name,
 				Value: secret.Value,
 			})

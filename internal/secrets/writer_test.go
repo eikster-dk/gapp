@@ -3,6 +3,7 @@ package secrets
 import (
 	"context"
 	"github.com/bradleyjkemp/cupaloy"
+	"github.com/eikc/gapp/internal"
 	"github.com/eikc/gapp/internal/gh"
 	"github.com/eikc/gapp/internal/secrets/mocks"
 	"github.com/golang/mock/gomock"
@@ -13,7 +14,7 @@ func Test_github_updateSecrets(t *testing.T) {
 	type args struct {
 		owner  string
 		repo   string
-		secret Secret
+		secret internal.Secret
 	}
 	tests := []struct {
 		name                      string
@@ -26,7 +27,7 @@ func Test_github_updateSecrets(t *testing.T) {
 			params: args{
 				owner: "eikc",
 				repo:  "gapp",
-				secret: Secret{
+				secret: internal.Secret{
 					Name:  "top secret",
 					Value: "top secret VALUE!",
 				},

@@ -8,7 +8,7 @@ import (
 )
 
 type Writer interface {
-	updateSecret(ctx context.Context, owner, repo string, secret internal.Secret) error
+	UpdateSecret(ctx context.Context, owner, repo string, secret internal.Secret) error
 }
 
 type Parser interface {
@@ -61,7 +61,7 @@ func (s *Service) RunManagement(ctx context.Context, params ManagementParams) er
 
 		for _, secret := range ss {
 			s.spinner.Message(fmt.Sprintf("repo: %s secret: %s", repoIdentifier, secret.Name))
-			err = s.writer.updateSecret(ctx, owner, repo, secret)
+			err = s.writer.UpdateSecret(ctx, owner, repo, secret)
 			if err != nil {
 				s.spinner.Fail()
 				return err
